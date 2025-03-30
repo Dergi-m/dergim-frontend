@@ -16,7 +16,6 @@
     "^(next/(.*)$)|^(next$)",
     "<THIRD_PARTY_MODULES>",
     "",
-    "^@/sanity/(.*)$",
     "^@/lib/(.*)$",
     "^@/stores/(.*)$",
     "^@/hooks/(.*)$",

@@ -1,0 +1,25 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.removeUnusedImports": "always",
+    "source.organizeImports": "always"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "tailwindCSS.experimental.classRegex": [
+    ["tv\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "files.associations": {
+    "*.json": "jsonc"
+  },
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.autoImportFileExcludePatterns": [
+    "next/dist",
+    "@radix-ui",
+    "tailwind-variants"
+  ]
+}
