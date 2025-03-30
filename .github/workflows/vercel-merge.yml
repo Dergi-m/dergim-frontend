@@ -17,20 +17,12 @@ jobs:
       - uses: dkershner6/vercel-set-env-action@v1
         with:
           token: ${{ secrets.VERCEL_TOKEN }}
-          projectName: events-app
-          envVariableKeys: CLIENT_EMAIL,PRIVATE_KEY,SPREADSHEET_ID
+          projectName: dergim
+          envVariableKeys: BACKEND_URL
         env:
-          CLIENT_EMAIL: ${{ secrets.CLIENT_EMAIL }}
-          TARGET_CLIENT_EMAIL: preview,development,production
-          TYPE_CLIENT_EMAIL: encrypted
-
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          TARGET_PRIVATE_KEY: preview,development,production
-          TYPE_PRIVATE_KEY: encrypted
-
-          SPREADSHEET_ID: ${{ secrets.EVENTS_APP_SPREADSHEET_ID }}
-          TARGET_SPREADSHEET_ID: preview,development,production
-          TYPE_SPREADSHEET_ID: encrypted
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          TARGET_BACKEND_URL: preview,development,production
+          TYPE_BACKEND_URL: encrypted
 
       - uses: amondnet/vercel-action@v20
         with:
