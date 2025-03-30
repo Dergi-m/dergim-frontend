@@ -1,0 +1,39 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# pnpm
+pnpm-lock.yaml
+.pnpm-debug.log*
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# Markdown files
+*.md
+
+# Config files
+tsconfig.json
+package.json
+tailwind.config.[tj]s
+.eslintrc.json
+.commitlintrc.json
+.postcssrc.json
+.lintstagedrc
+

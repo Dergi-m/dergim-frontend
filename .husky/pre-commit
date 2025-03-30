@@ -1,0 +1,17 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# Validate branch name
+valid_branch_regex='^(main|develop|((feature|bugfix|hotfix|release)\/[a-z0-9\-]+))$'
+branch_name="$(git rev-parse --abbrev-ref HEAD)"
+
+error_message="\nBranch name '$branch_name' is invalid.\nValid branch names:\n- main\n- develop\n- feature/your-feature-name\n- bugfix/issue-description\n- hotfix/urgent-fix\n- release/version-number\n\nYour commit will be rejected."
+
+if [[ ! $branch_name =~ $valid_branch_regex ]]; then
+    echo -e "\033[1;31m$error_message\033[0m"
+    exit 1
+fi
+
+# Run formatting and linting
+echo -e "\033[1;33mRunning pre-commit checks...\033[0m"
+pnpm dlx lint-staged
