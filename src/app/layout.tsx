@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-import { inter } from '@/lib/fonts';
+import { roboto } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
 import { TrpcProvider } from '@/modules/providers/trpc-provider';
 import { TailwindIndicator } from '@/modules/theme/tailwind-indicator';
@@ -23,7 +23,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html
       className={cn(
-        inter.variable,
+        roboto.variable,
         'bg-background text-foreground touch-manipulation scroll-smooth font-sans antialiased'
       )}
       lang="en"
