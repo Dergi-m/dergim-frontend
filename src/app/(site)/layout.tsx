@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
+import Image from 'next/image';
 
 import { Footer } from '@/modules/site-layout/footer';
-import { Header, HeaderMainBar, HeaderRightArea, HeaderTopBar } from '@/modules/site-layout/header';
-import { MobilePrimaryNavigation } from '@/modules/site-layout/primary-navigation';
+import { Header } from '@/modules/site-layout/header';
 
 type SiteLayoutProps = {
   children: ReactNode;
@@ -11,25 +11,19 @@ type SiteLayoutProps = {
 export default async function SiteLayout({ children }: SiteLayoutProps) {
   return (
     <>
-      <Header sticky>
-        <HeaderTopBar>
-          <div className="flex h-full items-center justify-between px-4">
-            <div>Logo</div>
-            <div>Top Bar Content</div>
-          </div>
-        </HeaderTopBar>
-        <HeaderMainBar>
-          <div className="flex h-full items-center justify-between px-4">
-            <div>Logo</div>
-            <div>Search Bar</div>
-            <div>Top Bar Content</div>
-          </div>
-          <HeaderRightArea>
-            <MobilePrimaryNavigation>
-              <div>Mobile Primary Navigation</div>
-            </MobilePrimaryNavigation>
-          </HeaderRightArea>
-        </HeaderMainBar>
+      <Header
+        className="bg-background py-6"
+        sticky
+      >
+        <div className="flex w-full items-center justify-center">
+          <Image
+            alt="header-logo"
+            src={'/logo.png'}
+            className="flex w-60 items-center justify-center"
+            width={450}
+            height={100}
+          />
+        </div>
       </Header>
       <main
         id="mainContent"
