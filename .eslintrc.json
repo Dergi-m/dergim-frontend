@@ -21,7 +21,7 @@
     "no-unused-vars": "error",
     "func-style": ["warn", "declaration"],
     "unused-imports/no-unused-imports": "error",
-    "react/jsx-fragments": ["warn", "syntax"],
+    "react/jsx-fragments": ["error", "syntax"],
     "react/jsx-no-useless-fragment": "warn",
     "react/self-closing-comp": ["error", {
       "component": true,
