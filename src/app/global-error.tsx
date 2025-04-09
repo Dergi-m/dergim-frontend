@@ -1,6 +1,6 @@
 'use client';
 
-import { inter } from '@/lib/fonts';
+import { roboto } from '@/lib/fonts';
 import { cn } from '@/lib/variants';
 import { ClientError } from '@/modules/error/client-error';
 
@@ -14,7 +14,7 @@ export default function GlobalErrorPage({ error }: GlobalErrorPageProps) {
   return (
     <html
       className={cn(
-        inter.variable,
+        roboto.variable,
         'bg-background text-foreground touch-manipulation scroll-smooth font-sans antialiased'
       )}
     >
