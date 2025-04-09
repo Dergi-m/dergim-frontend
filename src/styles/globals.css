@@ -98,8 +98,8 @@
   --header-top: var(--primary);
   --header-top-foreground: var(--primary-foreground);
 
-  --footer: var(--primary);
-  --footer-foreground: var(--primary-foreground);
+  --footer: var(--background);
+  --footer-foreground: var(--foreground);
 
   --chart-1: hsl(41 70% 55%);
   --chart-2: hsl(185 50% 55%);

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { Footer } from '@/modules/site-layout/footer';
 import { Header } from '@/modules/site-layout/header';
@@ -16,13 +17,15 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         sticky
       >
         <div className="flex w-full items-center justify-center">
-          <Image
-            alt="header-logo"
-            src={'/logo.png'}
-            className="flex w-60 items-center justify-center"
-            width={450}
-            height={100}
-          />
+          <Link href={'/'}>
+            <Image
+              alt="header-logo"
+              src={'/logo.png'}
+              className="flex w-60 items-center justify-center"
+              width={450}
+              height={100}
+            />
+          </Link>
         </div>
       </Header>
       <main
@@ -32,10 +35,7 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         {children}
       </main>
       <Footer>
-        <div className="flex flex-col gap-8 lg:gap-4">
-          <div>Footer Content</div>
-          <div>Footer Links</div>
-        </div>
+        <div className="text-center">Copyright &copy; 2023. All rights reserved.</div>
       </Footer>
     </>
   );
