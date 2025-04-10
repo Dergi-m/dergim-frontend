@@ -2,20 +2,26 @@ import { CheckCircle } from 'lucide-react';
 
 import { Button } from '@/modules/ui/button';
 import { Card, CardContent } from '@/modules/ui/card';
+import { Heading } from '@/modules/typography/heading';
+import { Text } from '@/modules/typography/text';
 
 export default function LandingPage() {
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12">
-      {/* Hero Section */}
       <section className="mb-16 text-center">
-        <h1 className="mb-4 text-4xl font-bold md:text-5xl">Automate Your Journal Workflow</h1>
+        <Heading
+          size="h1"
+          as="h1"
+          className="mb-4 text-4xl font-bold md:text-5xl"
+        >
+          Automate Your Journal Workflow
+        </Heading>
         <p className="text-muted-foreground mx-auto mb-6 max-w-2xl text-lg">
           From <b>writing</b> to <b>editing</b> to <b>presenting</b> Dergi-M streamlines your entire
           publishing process.
         </p>
       </section>
 
-      {/* Features Section */}
       <section className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
         {[
           {
@@ -38,20 +44,34 @@ export default function LandingPage() {
             <CardContent className="p-6">
               <div className="mb-3 flex items-center gap-3">
                 <CheckCircle className="text-primary" />
-                <h3 className="text-lg font-semibold">{feature.title}</h3>
+                <Heading
+                  size="h3"
+                  as="h3"
+                  className="text-lg font-semibold"
+                >
+                  {feature.title}
+                </Heading>
               </div>
-              <p className="text-muted-foreground text-sm">{feature.description}</p>
+              <Text className="text-muted-foreground text-sm">{feature.description}</Text>
             </CardContent>
           </Card>
         ))}
       </section>
 
-      {/* Call to Action Section */}
       <section className="text-center">
-        <h2 className="mb-4 text-2xl font-bold md:text-3xl">
+        <Heading
+          size="h2"
+          as="h2"
+          className="mb-4 text-2xl font-bold md:text-3xl"
+        >
           Ready to streamline your editorial process?
-        </h2>
-        <Button size="lg">Get Started</Button>
+        </Heading>
+        <Button
+          size="lg"
+          className="font-extrabold"
+        >
+          Get Started
+        </Button>
       </section>
     </main>
   );
