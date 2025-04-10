@@ -16,10 +16,10 @@ export default function LandingPage() {
         >
           Automate Your Journal Workflow
         </Heading>
-        <p className="text-muted-foreground mx-auto mb-6 max-w-2xl text-lg">
+        <Text className="text-muted-foreground mx-auto mb-6 max-w-2xl text-lg">
           From <b>writing</b> to <b>editing</b> to <b>presenting</b> Dergi-M streamlines your entire
           publishing process.
-        </p>
+        </Text>
       </section>
 
       <section className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-3">
