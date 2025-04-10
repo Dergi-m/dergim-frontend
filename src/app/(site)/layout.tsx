@@ -10,6 +10,8 @@ type SiteLayoutProps = {
 };
 
 export default async function SiteLayout({ children }: SiteLayoutProps) {
+  const year = new Date().getFullYear();
+
   return (
     <>
       <Header
@@ -35,7 +37,7 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         {children}
       </main>
       <Footer>
-        <div className="text-center">Copyright &copy; 2023. All rights reserved.</div>
+        <div className="text-center">Copyright &copy; {year}. All rights reserved.</div>
       </Footer>
     </>
   );
