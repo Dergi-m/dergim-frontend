@@ -10,6 +10,8 @@ import { TailwindIndicator } from '@/modules/theme/tailwind-indicator';
 
 import '@/styles/globals.css';
 
+import { Toaster } from 'sonner';
+
 export const metadata: Metadata = {
   title: 'Dergi-m',
   description: 'Ultimate tool for managing your digital journals',
@@ -31,6 +33,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       <body className="flex min-h-screen flex-col overflow-x-hidden">
         <Analytics />
         <SpeedInsights />
+        <Toaster />
         <TrpcProvider>{children}</TrpcProvider>
         {process.env.NODE_ENV !== 'production' && <TailwindIndicator />}
       </body>
