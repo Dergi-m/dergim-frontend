@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/modules/ui/card';
 import { Heading } from '@/modules/typography/heading';
 import { Text } from '@/modules/typography/text';
 
-export default function LandingPage() {
+export default async function LandingPage() {
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12">
       <section className="mb-16 text-center">
