@@ -18,6 +18,7 @@
     "prettier"
   ],
   "rules": {
+    "prettier/prettier": "error",
     "no-unused-vars": "error",
     "func-style": ["warn", "declaration"],
     "unused-imports/no-unused-imports": "error",

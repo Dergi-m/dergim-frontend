@@ -16,7 +16,7 @@ export default async function LandingPage() {
         >
           Automate Your Journal Workflow
         </Heading>
-        <Text className="text-muted-foreground mx-auto mb-6 max-w-2xl text-lg">
+        <Text className="mx-auto mb-6 max-w-2xl text-lg text-muted-foreground">
           From <b>writing</b> to <b>editing</b> to <b>presenting</b> Dergi-M streamlines your entire
           publishing process.
         </Text>
@@ -52,7 +52,7 @@ export default async function LandingPage() {
                   {feature.title}
                 </Heading>
               </div>
-              <Text className="text-muted-foreground text-sm">{feature.description}</Text>
+              <Text className="text-sm text-muted-foreground">{feature.description}</Text>
             </CardContent>
           </Card>
         ))}
