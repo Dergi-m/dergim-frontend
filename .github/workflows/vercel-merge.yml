@@ -20,7 +20,9 @@ jobs:
           projectName: dergim
           envVariableKeys: BACKEND_URL
         env:
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
+          BACKEND_CLIENT_ID: ${{ secrets.BACKEND_CLIENT_ID }}
+          BACKEND_CLIENT_SECRET: ${{ secrets.BACKEND_CLIENT_SECRET }}
           TARGET_BACKEND_URL: preview,development,production
           TYPE_BACKEND_URL: encrypted
 
