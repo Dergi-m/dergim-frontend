@@ -18,7 +18,7 @@ jobs:
         with:
           token: ${{ secrets.VERCEL_TOKEN }}
           projectName: dergim
-          envVariableKeys: BACKEND_URL
+          envVariableKeys: BACKEND_API_URL,BACKEND_CLIENT_ID,BACKEND_CLIENT_SECRET
         env:
           BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
           BACKEND_CLIENT_ID: ${{ secrets.BACKEND_CLIENT_ID }}
