@@ -1,16 +1,18 @@
 import { ReactNode } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
+import { SessionProvider } from '@/contexts/session-context';
+import { createServerCaller } from '@/server/api/root';
+import { Button } from '@/modules/ui/button';
 import { Footer } from '@/modules/site-layout/footer';
 import {
   Header,
   HeaderLeftArea,
-  HeaderMainArea,
   HeaderMainBar,
   HeaderRightArea,
 } from '@/modules/site-layout/header';
-import { Text } from '@/modules/typography/text';
 
 type SiteLayoutProps = {
   children: ReactNode;
@@ -19,12 +21,20 @@ type SiteLayoutProps = {
 export default async function SiteLayout({ children }: SiteLayoutProps) {
   const year = new Date().getFullYear();
 
+  const api = await createServerCaller();
+  const session = await api.website.authentication.getSession();
+
+  if (session.success) {
+    redirect('/tool');
+  }
+
   return (
     <>
       <Header
         className="bg-background py-6"
         sticky
       >
+        ,
         <HeaderMainBar>
           <HeaderLeftArea>
             <Link href={'/'}>
@@ -37,14 +47,13 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
               />
             </Link>
           </HeaderLeftArea>
-          <HeaderMainArea className="flex w-full items-center justify-center">
-            <Link href={'/'}>
-              <Text>Solutions</Text>
-            </Link>
-          </HeaderMainArea>
           <HeaderRightArea className="flex items-center justify-between">
-            <Link href={'/auth?act=login'}>Login</Link>
-            <Link href={'/auth?act=register'}>Register</Link>
+            <Link href={'/auth?act=login'}>
+              <Button variant={'outline'}>Login</Button>
+            </Link>
+            <Link href={'/auth?act=register'}>
+              <Button variant={'outline'}>Register</Button>
+            </Link>
           </HeaderRightArea>
         </HeaderMainBar>
       </Header>
@@ -52,7 +61,7 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         id="mainContent"
         className="flex-auto"
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </main>
       <Footer>
         <div className="text-center">Copyright &copy; {year}. All rights reserved.</div>

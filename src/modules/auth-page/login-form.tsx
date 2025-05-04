@@ -1,84 +1,127 @@
 'use client';
 
-import type React from 'react';
-import { useState } from 'react';
-import Link from 'next/link';
+import { useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
+import { LoginFormSchema } from '@/lib/schema/auth';
+import { trpc } from '@/server/api/react';
 import { Button } from '@/modules/ui/button';
-import { Checkbox } from '@/modules/ui/checkbox';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/modules/ui/form';
 import { Input } from '@/modules/ui/input';
-import { Label } from '@/modules/ui/label';
+import { SpinAnim } from '@/modules/ui/spin-anim';
 
-export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+function LoginForm() {
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt with:', { email, password, rememberMe });
-  };
+  const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
+    resolver: zodResolver(LoginFormSchema),
+    defaultValues: {
+      userName: '',
+      password: '',
+    },
+  });
+
+  const loginMutation = trpc.website.authentication.login.useMutation();
+
+  useMemo(async () => {
+    if (loginMutation.isSuccess) {
+      const body = JSON.stringify({ sessionToken: loginMutation.data.sessionToken });
+
+      const sessionSetter = await fetch('/api/set-session-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body,
+        credentials: 'include',
+      });
+
+      if (sessionSetter.ok) {
+        router.push('/tool');
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loginMutation.isSuccess]);
+
+  async function onLogin(data: LoginFormSchema) {
+    try {
+      await loginMutation.mutateAsync(data);
+    } catch {
+      loginForm.setError('root', {
+        type: 'validate',
+        message: 'Invalid username or password',
+      });
+    }
+  }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex size-full flex-col justify-between"
-    >
-      <div className="space-y-4">
-        <div className="space-y-1">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="name@example.com"
-            required
+    <Form {...loginForm}>
+      <form
+        onSubmit={loginForm.handleSubmit(onLogin)}
+        className="flex size-full flex-col justify-start"
+      >
+        <div className="space-y-4">
+          <FormField
+            name="userName"
+            control={loginForm.control}
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel htmlFor="userName">Username</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    id="userName"
+                    placeholder="Your Username"
+                    required
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={loginForm.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <FormLabel htmlFor="password">Password</FormLabel>
+                  {/* <Link
+                    href="/forgot-password"
+                    className="text-sm text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </Link> */}
+                </div>
+                <FormControl>
+                  <Input
+                    {...field}
+                    id="password"
+                    type="password"
+                    placeholder="********"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
           />
         </div>
-
-        <div className="space-y-1">
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
-            >
-              Forgot password?
-            </Link>
+        <div className="space-y-4">
+          <div>
+            {loginMutation.error && <FormMessage>Invalid username or password</FormMessage>}
           </div>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-      </div>
-      <div className="space-y-4">
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            id="remember"
-            checked={rememberMe}
-            onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-          />
-          <Label
-            htmlFor="remember"
-            className="text-sm font-normal"
+          <Button
+            className="w-full py-6"
+            type="submit"
+            disabled={loginMutation.status === 'pending'}
           >
-            Remember me
-          </Label>
+            {loginMutation.status === 'pending' ? <SpinAnim /> : 'Sign in'}
+          </Button>
         </div>
-
-        <Button
-          type="submit"
-          className="w-full"
-        >
-          Sign in
-        </Button>
-      </div>
-    </form>
+      </form>
+    </Form>
   );
 }
+
+export { LoginForm };

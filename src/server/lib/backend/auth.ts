@@ -14,6 +14,7 @@ function timeSpanToMiliseconds(timeSpan: string): number {
 
   return (hours * 3600 + minutes * 60 + seconds) * 1000;
 }
+
 export const AuthenticationTokenResponse = z
   .object({
     accessToken: z.string(),

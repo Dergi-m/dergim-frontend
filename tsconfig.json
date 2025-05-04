@@ -40,7 +40,8 @@
     "src/**/*.tsx",
     ".storybook/**/*.ts",
     ".storybook/**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/app/api/**/*.ts"
   ],
   "exclude": ["node_modules"]
 }

@@ -67,12 +67,13 @@ export type BackendResponse<TOptions extends BackendRequestOptions> =
       ? BackendVoidResponse
       : never;
 
-export async function norceRequest<T extends BackendRequestOptions>(options: T) {
+export async function backendRequest<T extends BackendRequestOptions>(options: T) {
   try {
     const { url, query, ...opts } = options;
 
     const cookieStore = await cookies();
     const accessToken = cookieStore.get('accessToken')?.value;
+    const sessionToken = cookieStore.get('sessionToken')?.value;
 
     const requestUrl = new URL(url, process.env.BACKEND_API_URL);
 
@@ -94,8 +95,9 @@ export async function norceRequest<T extends BackendRequestOptions>(options: T) 
       headers: {
         ...opts.headers,
         'authorization': `Bearer ${accessToken}`,
+        'SessionToken': sessionToken,
         'accept': 'application/json',
-        'content-type': 'application/json',
+        'content-type': 'application/json; charset=utf-8',
       },
     });
     if (!response.ok) {
@@ -145,10 +147,4 @@ export async function norceRequest<T extends BackendRequestOptions>(options: T) 
       error,
     } as BackendResponse<T>;
   }
-}
-
-export async function test() {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('accessToken')?.value;
-  return accessToken;
 }
