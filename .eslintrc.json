@@ -24,6 +24,7 @@
     "unused-imports/no-unused-imports": "error",
     "react/jsx-fragments": ["warn", "syntax"],
     "react/jsx-no-useless-fragment": "warn",
+    "react/react-in-jsx-scope": "warn",
     "react/self-closing-comp": ["warn", {
       "component": true,
       "html": true
