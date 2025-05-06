@@ -41,7 +41,7 @@ export function ProjectSwitcher({ organization }: ProjectSwitcherProps) {
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{activeProject.name}</span>
-                <span className="text-muted-foreground truncate text-xs">{orgName}</span>
+                <span className="truncate text-xs text-muted-foreground">{orgName}</span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -52,7 +52,7 @@ export function ProjectSwitcher({ organization }: ProjectSwitcherProps) {
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
           >
-            <DropdownMenuLabel className="text-muted-foreground text-xs">
+            <DropdownMenuLabel className="text-xs text-muted-foreground">
               Projects
             </DropdownMenuLabel>
             {projects.map((project, idx) => (
@@ -69,16 +69,16 @@ export function ProjectSwitcher({ organization }: ProjectSwitcherProps) {
             ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Plus className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">New Project</div>
+              <div className="font-medium text-muted-foreground">New Project</div>
             </DropdownMenuItem>
             <DropdownMenuItem className="gap-2 p-2">
-              <div className="bg-background flex size-6 items-center justify-center rounded-md border">
+              <div className="flex size-6 items-center justify-center rounded-md border bg-background">
                 <Cog className="size-4" />
               </div>
-              <div className="text-muted-foreground font-medium">Project Settings</div>
+              <div className="font-medium text-muted-foreground">Project Settings</div>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

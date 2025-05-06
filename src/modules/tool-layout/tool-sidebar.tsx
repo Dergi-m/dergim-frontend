@@ -1,5 +1,7 @@
 'use client';
 
+import { ComponentType } from 'react';
+
 import { Organization } from '@/lib/schema/organization';
 import {
   Sidebar,
@@ -16,7 +18,7 @@ import { NavUser } from '@/modules/tool-layout/nav-user';
 export type navItem = {
   title: string;
   url: string;
-  icon: React.ComponentType;
+  icon: ComponentType;
   isActive: boolean;
   group: 'Organization' | 'Project' | 'User';
 };
