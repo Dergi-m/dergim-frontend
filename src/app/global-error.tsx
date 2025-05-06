@@ -15,7 +15,7 @@ export default function GlobalErrorPage({ error }: GlobalErrorPageProps) {
     <html
       className={cn(
         roboto.variable,
-        'bg-background text-foreground touch-manipulation scroll-smooth font-sans antialiased'
+        'touch-manipulation scroll-smooth bg-background font-sans text-foreground antialiased'
       )}
     >
       <head />
