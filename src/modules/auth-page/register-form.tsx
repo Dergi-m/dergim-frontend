@@ -17,12 +17,11 @@ function RegisterForm() {
   const registerForm = useForm({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
-      name: '',
+      firstName: '',
+      lastName: '',
       email: '',
       password: '',
       confirmPassword: '',
-      age: 0,
-      gender: '',
       userName: '',
     },
   });
@@ -31,6 +30,7 @@ function RegisterForm() {
 
   useMemo(async () => {
     if (registerMutation.isSuccess) {
+      console.log('sucus');
       const body = JSON.stringify({ sessionToken: registerMutation.data.sessionToken });
 
       const sessionSetter = await fetch('/api/set-session-token', {
@@ -51,10 +51,12 @@ function RegisterForm() {
 
   async function onRegister(data: RegisterFormSchema) {
     try {
-      registerMutation.mutateAsync({
+      const name = `${data.firstName} ${data.lastName}`;
+
+      await registerMutation.mutateAsync({
         userName: data.userName,
         password: data.password,
-        name: data.name,
+        name,
         email: data.email,
       });
     } catch {
@@ -71,31 +73,49 @@ function RegisterForm() {
         onSubmit={registerForm.handleSubmit(onRegister)}
         className="space-y-4"
       >
-        <FormField
-          name="name"
-          control={registerForm.control}
-          render={({ field }) => (
-            <FormItem className="space-y-1">
-              <FormLabel htmlFor="name">Full Name</FormLabel>
-              <Input
-                id="name"
-                {...field}
-                placeholder="John Doe"
-                required
-              />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          <FormField
+            name="firstName"
+            control={registerForm.control}
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel htmlFor="register-firstName">First Name</FormLabel>
+                <Input
+                  id="register-firstName"
+                  {...field}
+                  placeholder="John"
+                  required
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="lastName"
+            control={registerForm.control}
+            render={({ field }) => (
+              <FormItem className="space-y-1">
+                <FormLabel htmlFor="register-lastName">Last Name</FormLabel>
+                <Input
+                  id="register-lastName"
+                  {...field}
+                  placeholder="Doe"
+                  required
+                />
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           name="userName"
           control={registerForm.control}
           render={({ field }) => (
             <FormItem className="space-y-1">
-              <FormLabel htmlFor="name">Username</FormLabel>
+              <FormLabel htmlFor="register-userName">Username</FormLabel>
               <Input
-                id="userName"
+                id="register-userName"
                 {...field}
                 placeholder="Johndoeisawesome001"
                 required
@@ -112,7 +132,7 @@ function RegisterForm() {
               <FormLabel htmlFor="register-email">Email</FormLabel>
               <Input
                 {...field}
-                id="email"
+                id="register-email"
                 type="email"
                 placeholder="name@example.com"
               />
@@ -128,7 +148,7 @@ function RegisterForm() {
               <FormLabel htmlFor="register-password">Password</FormLabel>
               <Input
                 {...field}
-                id="password"
+                id="register-password"
                 type="password"
                 required
               />
@@ -141,7 +161,7 @@ function RegisterForm() {
           control={registerForm.control}
           render={({ field }) => (
             <FormItem className="space-y-1">
-              <FormLabel htmlFor="register-password">Confirm Password</FormLabel>
+              <FormLabel htmlFor="confirmPassword">Confirm Password</FormLabel>
               <Input
                 {...field}
                 id="confirmPassword"
@@ -152,12 +172,19 @@ function RegisterForm() {
             </FormItem>
           )}
         />
+        <div>
+          {registerMutation.error && <FormMessage>Username or email is already used</FormMessage>}
+        </div>
         <Button
           className="w-full py-6"
           type="submit"
-          disabled={registerMutation.status === 'pending'}
+          disabled={registerMutation.status === 'pending' || registerMutation.isSuccess}
         >
-          {registerMutation.status === 'pending' ? <SpinAnim /> : 'Create Account'}
+          {registerMutation.status === 'pending' || registerMutation.isSuccess ? (
+            <SpinAnim />
+          ) : (
+            'Create Account'
+          )}
         </Button>
       </form>
     </Form>

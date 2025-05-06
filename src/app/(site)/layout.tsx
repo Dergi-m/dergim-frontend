@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { SessionProvider } from '@/contexts/session-context';
 import { createServerCaller } from '@/server/api/root';
 import { Button } from '@/modules/ui/button';
 import { Footer } from '@/modules/site-layout/footer';
@@ -34,7 +33,6 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         className="bg-background py-6"
         sticky
       >
-        ,
         <HeaderMainBar>
           <HeaderLeftArea>
             <Link href={'/'}>
@@ -61,7 +59,7 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         id="mainContent"
         className="flex-auto"
       >
-        <SessionProvider>{children}</SessionProvider>
+        {children}
       </main>
       <Footer>
         <div className="text-center">Copyright &copy; {year}. All rights reserved.</div>

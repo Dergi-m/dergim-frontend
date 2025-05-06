@@ -1,7 +1,6 @@
 'use client';
 
 import { Organization } from '@/lib/schema/organization';
-import { User } from '@/lib/schema/user';
 import {
   Sidebar,
   SidebarContent,
@@ -13,12 +12,6 @@ import {
 import { NavMain } from '@/modules/tool-layout/nav-main';
 import { ProjectSwitcher } from '@/modules/tool-layout/nav-project';
 import { NavUser } from '@/modules/tool-layout/nav-user';
-
-const user: User = {
-  name: 'Musa Yüksel',
-  email: 'yksl3461@gmail .com',
-  avatar: '/avatars/shadcn.jpg',
-};
 
 export type navItem = {
   title: string;
@@ -69,7 +62,7 @@ export function ToolSidebar({ organizaton }: ToolSidebarProps) {
         variant="floating"
         collapsible="icon"
       >
-        <SidebarTrigger className="absolute top-4 right-4 z-30" />
+        <SidebarTrigger className="absolute right-4 top-4 z-30" />
         <SidebarContent className="pt-8">
           <SidebarHeader className="text-center text-xl font-extrabold">
             <ProjectSwitcher organization={organizaton} />
@@ -79,7 +72,7 @@ export function ToolSidebar({ organizaton }: ToolSidebarProps) {
           </SidebarContent>
         </SidebarContent>
         <SidebarFooter>
-          <NavUser user={user} />
+          <NavUser />
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

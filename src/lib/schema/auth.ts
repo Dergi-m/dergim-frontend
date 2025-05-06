@@ -8,7 +8,7 @@ export type LoginFormSchema = z.infer<typeof LoginFormSchema>;
 
 export const RegisterFormSchema = z
   .object({
-    userName: z.string(),
+    userName: z.string().min(5, 'Username should be at least 5 characters'),
     password: z
       .string()
       .regex(
@@ -16,10 +16,9 @@ export const RegisterFormSchema = z
         'Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number'
       ),
     confirmPassword: z.string().min(3, 'Confirm Password is required'),
-    name: z.string(),
+    firstName: z.string().min(3, 'First Name is required'),
+    lastName: z.string().min(3, 'Last Name is required'),
     email: z.string().email(),
-    age: z.number().nullish(),
-    gender: z.string().nullish(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Passwords do not match',

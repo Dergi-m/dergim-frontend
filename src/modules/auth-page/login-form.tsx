@@ -88,12 +88,6 @@ function LoginForm() {
               <FormItem className="space-y-1">
                 <div className="flex items-center justify-between">
                   <FormLabel htmlFor="password">Password</FormLabel>
-                  {/* <Link
-                    href="/forgot-password"
-                    className="text-sm text-primary hover:underline"
-                  >
-                    Forgot password?
-                  </Link> */}
                 </div>
                 <FormControl>
                   <Input
@@ -114,9 +108,13 @@ function LoginForm() {
           <Button
             className="w-full py-6"
             type="submit"
-            disabled={loginMutation.status === 'pending'}
+            disabled={loginMutation.status === 'pending' || loginMutation.isSuccess}
           >
-            {loginMutation.status === 'pending' ? <SpinAnim /> : 'Sign in'}
+            {loginMutation.status === 'pending' || loginMutation.isSuccess ? (
+              <SpinAnim />
+            ) : (
+              'Sign in'
+            )}
           </Button>
         </div>
       </form>

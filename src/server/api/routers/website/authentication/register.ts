@@ -5,15 +5,6 @@ import { backendRequest } from '@/server/lib/backend/request';
 
 const RegisterResponseSchema = z.object({
   sessionToken: z.string(),
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    userName: z.string(),
-    email: z.string(),
-    age: z.number().nullish(),
-    gender: z.string().nullish(),
-  }),
-  organisations: z.any().array(),
 });
 
 export default publicProcedure
@@ -23,8 +14,6 @@ export default publicProcedure
       password: z.string(),
       name: z.string(),
       email: z.string().email(),
-      age: z.number().nullish(),
-      gender: z.string().nullish(),
     })
   )
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

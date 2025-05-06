@@ -7,24 +7,22 @@ type Session = {
   name: string;
   userName: string;
   email: string;
-  age?: number | null | undefined;
-  gender?: string | null | undefined;
 };
 
 type SessionContextType = {
-  session: Session | null;
+  session: Session;
   setSession: (session: Session) => void;
 };
 
 type SessionProviderProps = {
-  sessionToken?: string;
+  _session: Session;
   children?: ReactNode;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-export function SessionProvider({ children }: SessionProviderProps) {
-  const [session, setSession] = useState<Session | null>(null);
+export function SessionProvider({ children, _session }: SessionProviderProps) {
+  const [session, setSession] = useState<Session>(_session);
 
   return (
     <SessionContext.Provider value={{ session, setSession }}>{children}</SessionContext.Provider>
@@ -47,7 +45,7 @@ export function useSession() {
     throw new Error('useSession must be used within a SessionProvider');
   }
 
-  const { session, setSession } = context;
+  const { session } = context;
 
-  return { session, setSession } as const;
+  return { session } as const;
 }

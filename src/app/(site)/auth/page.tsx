@@ -2,7 +2,7 @@ import { AuthFormsContainer } from '@/modules/auth-page/auth-forms-container';
 
 export default async function AuthPage() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex h-full flex-col items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <h1 className="text-3xl font-bold">Welcome</h1>

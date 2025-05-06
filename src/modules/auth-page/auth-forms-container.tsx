@@ -14,9 +14,6 @@ function AuthFormsContainer() {
 
   if (act !== 'login' && act !== 'register') return notFound();
 
-  // const loginMutation = trpc.website.authentication.login.useMutation();
-  // const registerMutation = trpc.website.authentication.register.useMutation();
-
   return (
     <>
       {/* Form switcher buttons */}

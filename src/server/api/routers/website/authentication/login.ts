@@ -5,15 +5,6 @@ import { backendRequest } from '@/server/lib/backend/request';
 
 const LoginResponseSchema = z.object({
   sessionToken: z.string(),
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    userName: z.string(),
-    email: z.string(),
-    age: z.number().nullish(),
-    gender: z.string().nullish(),
-  }),
-  organisations: z.any().array(),
 });
 
 export default publicProcedure
