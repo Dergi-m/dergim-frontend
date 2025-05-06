@@ -11,8 +11,40 @@ const SessionResponseSchema = z.object({
       name: z.string(),
       userName: z.string(),
       email: z.string(),
-      age: z.number().nullish(),
-      gender: z.string().nullish(),
+      organisationMemberships: z.object({
+        $values: z
+          .object({
+            id: z.string(),
+            userId: z.string(),
+            organisationId: z.string(),
+            roleId: z.string(),
+          })
+          .array()
+          .optional(),
+      }),
+      projects: z.object({
+        $values: z
+          .object({
+            id: z.string(),
+            name: z.string(),
+            description: z.string(),
+          })
+          .array()
+          .optional(),
+      }),
+      projectInvitations: z.object({
+        $values: z
+          .object({
+            id: z.string(),
+            projectId: z.string(),
+            senderUserId: z.string(),
+            targetUserId: z.string(),
+            message: z.string(),
+            createdAt: z.string(),
+          })
+          .array()
+          .optional(),
+      }),
     })
     .optional(),
 });
@@ -42,7 +74,24 @@ export default publicProcedure.query(async ({ ctx }) => {
       throw new Error('User not found');
     }
 
-    return response.data;
+    const data = response.data.user;
+
+    const user = {
+      id: data.id,
+      name: data.name,
+      userName: data.userName,
+      email: data.email,
+      organisationMemberships: data.organisationMemberships.$values,
+      projects: data.projects.$values,
+      projectInvitations: data.projectInvitations.$values,
+    };
+
+    console.log(user);
+
+    return {
+      success: true,
+      user,
+    };
   } catch {
     return {
       success: false,
