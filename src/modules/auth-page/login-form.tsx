@@ -13,7 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/modules/ui/input';
 import { SpinAnim } from '@/modules/ui/spin-anim';
 
-function LoginForm() {
+export function LoginForm() {
   const router = useRouter();
 
   const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
@@ -121,5 +121,3 @@ function LoginForm() {
     </Form>
   );
 }
-
-export { LoginForm };

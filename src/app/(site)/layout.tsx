@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -16,14 +17,15 @@ import {
 type SiteLayoutProps = {
   children: ReactNode;
 };
-
 export default async function SiteLayout({ children }: SiteLayoutProps) {
   const year = new Date().getFullYear();
+
+  const pathname = headers().get('x-pathname');
 
   const api = await createServerCaller();
   const session = await api.website.authentication.getSession();
 
-  if (session.success) {
+  if (session.success && !pathname?.startsWith('/tool')) {
     redirect('/tool');
   }
 

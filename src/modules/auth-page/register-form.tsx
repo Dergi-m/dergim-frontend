@@ -12,7 +12,7 @@ import { Form, FormField, FormItem, FormLabel, FormMessage } from '@/modules/ui/
 import { Input } from '@/modules/ui/input';
 import { SpinAnim } from '@/modules/ui/spin-anim';
 
-function RegisterForm() {
+export function RegisterForm() {
   const router = useRouter();
   const registerForm = useForm({
     resolver: zodResolver(RegisterFormSchema),
@@ -30,7 +30,6 @@ function RegisterForm() {
 
   useMemo(async () => {
     if (registerMutation.isSuccess) {
-      console.log('sucus');
       const body = JSON.stringify({ sessionToken: registerMutation.data.sessionToken });
 
       const sessionSetter = await fetch('/api/set-session-token', {
@@ -190,5 +189,3 @@ function RegisterForm() {
     </Form>
   );
 }
-
-export { RegisterForm };

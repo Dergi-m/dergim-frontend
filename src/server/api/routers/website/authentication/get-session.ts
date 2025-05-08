@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
-import { publicProcedure } from '@/server/api/trpc';
+import { SessionUser } from '@/lib/schema/session-user';
+import { serverProcedure } from '@/server/api/trpc';
 import { backendRequest } from '@/server/lib/backend/request';
 
 const SessionResponseSchema = z.object({
@@ -50,7 +51,7 @@ const SessionResponseSchema = z.object({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default publicProcedure.query(async ({ ctx }) => {
+export default serverProcedure.query(async ({ ctx }) => {
   try {
     if (ctx.headers.get('SessionToken')) {
       throw new Error('There is no valid session');
@@ -76,17 +77,19 @@ export default publicProcedure.query(async ({ ctx }) => {
 
     const data = response.data.user;
 
-    const user = {
+    const orgMemberships = data.organisationMemberships.$values;
+    if (!orgMemberships) throw new Error('Organisation memberships not found');
+
+    const org = orgMemberships[0];
+    const user: SessionUser = {
       id: data.id,
       name: data.name,
       userName: data.userName,
       email: data.email,
-      organisationMemberships: data.organisationMemberships.$values,
+      organisationId: org?.organisationId ?? '',
       projects: data.projects.$values,
       projectInvitations: data.projectInvitations.$values,
     };
-
-    console.log(user);
 
     return {
       success: true,

@@ -1,31 +1,69 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-type Session = {
-  id: string;
-  name: string;
-  userName: string;
-  email: string;
-};
+import { ProjectSummary, SessionUser } from '@/lib/schema/session-user';
 
 type SessionContextType = {
-  session: Session;
-  setSession: (session: Session) => void;
+  sessionUser: SessionUser;
+  setSessionUser: (session: SessionUser) => void;
+  activeProject?: ProjectSummary;
+  setActiveProject: (project: ProjectSummary) => void;
+  projects: ProjectSummary[];
+  addProject: (project: ProjectSummary) => void;
+  removeProject: (projectId: string) => void;
 };
 
 type SessionProviderProps = {
-  _session: Session;
+  session: SessionUser;
   children?: ReactNode;
 };
 
 const SessionContext = createContext<SessionContextType | null>(null);
 
-export function SessionProvider({ children, _session }: SessionProviderProps) {
-  const [session, setSession] = useState<Session>(_session);
+export function SessionProvider({ children, session }: SessionProviderProps) {
+  const [sessionUser, setSessionUser] = useState<SessionUser>(session);
+  const [projects, setProjects] = useState<ProjectSummary[]>(session.projects ?? []);
+  const [activeProject, setActiveProject] = useState<ProjectSummary>();
+
+  const addProject = (project: ProjectSummary) => {
+    setProjects((prevProjects) => [...prevProjects, project]);
+  };
+
+  const removeProject = (projectId: string) => {
+    setProjects((prevProjects) => prevProjects.filter((p) => p.id !== projectId));
+  };
+
+  useEffect(() => {
+    const projects = sessionUser.projects ?? [];
+    const currentProjectName = localStorage.getItem('activeProject');
+
+    if (!activeProject) {
+      const currentProject = currentProjectName
+        ? projects.find((project) => project.name === currentProjectName)
+        : projects[0];
+      setActiveProject(currentProject);
+    }
+
+    if (currentProjectName !== activeProject?.name) {
+      localStorage.setItem('activeProject', activeProject?.name ?? '');
+    }
+  }, [activeProject, sessionUser.projects]);
 
   return (
-    <SessionContext.Provider value={{ session, setSession }}>{children}</SessionContext.Provider>
+    <SessionContext.Provider
+      value={{
+        sessionUser,
+        setSessionUser,
+        activeProject,
+        setActiveProject,
+        addProject,
+        projects,
+        removeProject,
+      }}
+    >
+      {children}
+    </SessionContext.Provider>
   );
 }
 
@@ -38,6 +76,7 @@ export function SessionProvider({ children, _session }: SessionProviderProps) {
  *
  * @throws {Error} If the hook is used outside of a ApplicationProvider.
  */
+
 export function useSession() {
   const context = useContext(SessionContext);
 
@@ -45,7 +84,15 @@ export function useSession() {
     throw new Error('useSession must be used within a SessionProvider');
   }
 
-  const { session } = context;
+  const { sessionUser, setActiveProject, activeProject, addProject, projects, removeProject } =
+    context;
 
-  return { session } as const;
+  return {
+    sessionUser,
+    activeProject,
+    setActiveProject,
+    projects,
+    addProject,
+    removeProject,
+  } as const;
 }
