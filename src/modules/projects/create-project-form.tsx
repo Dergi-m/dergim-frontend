@@ -49,7 +49,6 @@ export function CreateProjectForm() {
 
   useEffect(() => {
     if (createProjectMutation.isSuccess && createProjectMutation.data.success) {
-      console.log(createProjectMutation.data);
       const projectSummary = createProjectMutation.data.data!;
 
       addProject(projectSummary);

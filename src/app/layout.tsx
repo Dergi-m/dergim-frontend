@@ -6,6 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 
 import { roboto } from '@/lib/fonts';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@/modules/ui/toaster';
 import { TrpcProvider } from '@/modules/providers/trpc-provider';
 import { TailwindIndicator } from '@/modules/theme/tailwind-indicator';
 
@@ -35,6 +36,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
         <TrpcProvider>
           <NuqsAdapter>{children}</NuqsAdapter>
         </TrpcProvider>
+        <Toaster />
         {process.env.NODE_ENV !== 'production' && <TailwindIndicator />}
       </body>
     </html>

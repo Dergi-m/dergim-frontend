@@ -3,15 +3,14 @@ import { z } from 'zod';
 import { publicProcedure } from '@/server/api/trpc';
 import { backendRequest } from '@/server/lib/backend/request';
 
-const SessionResponseSchema = z.any();
+const RemoveMemberResponseSchema = z.any();
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default publicProcedure
   .input(
     z.object({
-      id: z.string(),
-      name: z.string(),
-      description: z.string(),
+      projectId: z.string(),
+      userId: z.string(),
     })
   )
   .mutation(async ({ ctx, input }) => {
@@ -20,27 +19,26 @@ export default publicProcedure
         throw new Error('There is no valid session');
       }
 
-      const body = JSON.stringify({
-        ...input,
-      });
-
       const response = await backendRequest({
-        url: `/api/projects`,
-        method: 'PUT',
-        schema: SessionResponseSchema,
-        body,
+        url: `/api/projects/${input.projectId}/remove-member`,
+        method: 'GET',
+        schema: RemoveMemberResponseSchema,
+        query: {
+          userId: input.userId,
+        },
       });
 
       if (!response.success) {
         throw response.error;
       }
-
       return {
         success: true,
+        message: 'Member removed successfully',
       };
     } catch {
       return {
         success: false,
+        message: 'There was an error removing the member',
       };
     }
   });

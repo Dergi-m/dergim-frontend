@@ -38,8 +38,7 @@ export async function middleware(request: NextRequest) {
         sameSite: 'lax',
         expires: Date.now() + accessTokenResponse.expiresIn,
       });
-    } catch (err) {
-      console.error('Failed to refresh access token:', err);
+    } catch {
       return new NextResponse('Authentication failed', { status: 401 });
     }
   }

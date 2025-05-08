@@ -30,7 +30,6 @@ export function RegisterForm() {
 
   useMemo(async () => {
     if (registerMutation.isSuccess) {
-      console.log('sucus');
       const body = JSON.stringify({ sessionToken: registerMutation.data.sessionToken });
 
       const sessionSetter = await fetch('/api/set-session-token', {

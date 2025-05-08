@@ -24,7 +24,7 @@ export function ProjectListLoader() {
         <div className="grid size-full gap-x-2 gap-y-4 p-5 lg:grid-cols-3 2xl:grid-cols-5">
           {projects.map((project, idx) => (
             <Link
-              href={`projects/${project.name}`}
+              href={`projects/${project.id}`}
               key={`${project.name}-${idx}`}
               className="flex h-64 w-64 flex-col items-center justify-center space-y-2 rounded-lg border p-4 text-center shadow-sm transition-colors hover:bg-slate-100"
             >
