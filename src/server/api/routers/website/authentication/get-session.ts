@@ -63,8 +63,6 @@ export default serverProcedure.query(async ({ ctx }) => {
       schema: SessionResponseSchema,
     });
 
-    console.log(response);
-
     if (!response.success) {
       throw response.error;
     }
