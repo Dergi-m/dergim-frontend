@@ -75,6 +75,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
   };
 
   async function handleInviteUser() {
+    console.log('asd', inviteUserName);
     try {
       if (!inviteUserName.trim()) {
         toast({
@@ -96,6 +97,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
         toast({
           title: 'Invitation sent',
           description: `Invitation has been sent to ${inviteUserName}.`,
+          variant: 'default',
         });
       } else {
         toast({

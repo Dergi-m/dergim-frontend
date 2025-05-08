@@ -11,8 +11,8 @@ import {
   TrashIcon,
   UploadIcon,
 } from 'lucide-react';
-import { toast } from 'sonner';
 
+import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/modules/ui/button';
 import { Card, CardContent } from '@/modules/ui/card';
 import {
@@ -45,6 +45,7 @@ export default function FilesPage() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
 
   // Accepted file types
   const acceptedFileTypes = '.jpg,.jpeg,.png,.gif,.pdf,.doc,.docx';
@@ -64,8 +65,10 @@ export default function FilesPage() {
       );
 
       if (!isAccepted) {
-        toast.warning('Invalid file type', {
+        toast({
+          title: 'File type not accepted',
           description: `${file.name} is not an accepted file type.`,
+          variant: 'destructive',
         });
         return;
       }
@@ -87,25 +90,30 @@ export default function FilesPage() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-
-    toast('Files uploaded', {
-      description: 'Your files have been successfully uploaded.',
+    toast({
+      title: 'Files uploaded',
+      description: `${uploadedFiles.length} files have been successfully uploaded.`,
+      variant: 'default',
     });
   };
 
   // Handle file deletion
   const handleDeleteFile = (id: string) => {
     setFiles((prev) => prev.filter((file) => file.id !== id));
-    toast('File deleted', {
-      description: 'The file has been removed from the system.',
+
+    toast({
+      title: 'File deleted',
+      description: 'The file has been successfully removed.',
     });
   };
 
   // Handle file export/download
   const handleExportFile = (file: FileItem) => {
     // In a real application, this would trigger a download from your storage
-    toast('File export initiated', {
+    toast({
+      title: 'Exporting file',
       description: `Downloading ${file.name}...`,
+      variant: 'default',
     });
   };
 
@@ -144,7 +152,7 @@ export default function FilesPage() {
 
       <div className="mb-8 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
         <div className="relative w-full md:w-96">
-          <SearchIcon className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform" />
+          <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
           <Input
             placeholder="Search files..."
             className="pl-10"
@@ -183,8 +191,9 @@ export default function FilesPage() {
               <div className="grid grid-cols-1 gap-4 py-4">
                 <Button
                   onClick={() =>
-                    toast('Export initiated', {
-                      description: 'Exporting all files as ZIP...',
+                    toast({
+                      title: 'Export initiated',
+                      description: 'Exporting all files as PDF...',
                     })
                   }
                 >
@@ -193,8 +202,9 @@ export default function FilesPage() {
                 <Button
                   variant="outline"
                   onClick={() =>
-                    toast('Export initiated', {
-                      description: 'Generating file list as CSV...',
+                    toast({
+                      title: 'Export initiated',
+                      description: 'Exporting all files as CSV...',
                     })
                   }
                 >
@@ -209,9 +219,9 @@ export default function FilesPage() {
       {files.length === 0 ? (
         <Card className="w-full">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileIcon className="text-muted-foreground mb-4 h-16 w-16" />
+            <FileIcon className="mb-4 h-16 w-16 text-muted-foreground" />
             <h3 className="mb-2 text-xl font-medium">No files uploaded</h3>
-            <p className="text-muted-foreground mb-4">
+            <p className="mb-4 text-muted-foreground">
               Upload files to start managing your journal documents
             </p>
             <Button onClick={() => fileInputRef.current?.click()}>
@@ -255,7 +265,7 @@ export default function FilesPage() {
                               variant="ghost"
                               size="icon"
                             >
-                              <TrashIcon className="text-destructive h-4 w-4" />
+                              <TrashIcon className="h-4 w-4 text-destructive" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
@@ -280,15 +290,15 @@ export default function FilesPage() {
       <div className="mt-6">
         <h2 className="mb-2 text-lg font-semibold">Accepted File Types</h2>
         <div className="flex flex-wrap gap-2">
-          <div className="bg-muted flex items-center gap-1 rounded-full px-3 py-1 text-sm">
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
             <ImageIcon className="h-4 w-4" />
             <span>Images (JPG, PNG, GIF)</span>
           </div>
-          <div className="bg-muted flex items-center gap-1 rounded-full px-3 py-1 text-sm">
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
             <FileTextIcon className="h-4 w-4" />
             <span>PDF</span>
           </div>
-          <div className="bg-muted flex items-center gap-1 rounded-full px-3 py-1 text-sm">
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
             <FileTextIcon className="h-4 w-4" />
             <span>Word (DOC, DOCX)</span>
           </div>
