@@ -9,7 +9,7 @@ type ServerErrorProps = {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function ServerError({ notFound, generalError }: ServerErrorProps) {
-  const header = 'Unexpected Server Error';
+  const header = notFound ? 'Page does not exist' : 'Unexpected Server Error';
   const richText = '';
 
   return (
