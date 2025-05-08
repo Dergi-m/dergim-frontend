@@ -43,6 +43,7 @@ export async function middleware(request: NextRequest) {
       return new NextResponse('Authentication failed', { status: 401 });
     }
   }
+  response.headers.set('x-pathname', request.nextUrl.pathname);
   return response;
 }
 

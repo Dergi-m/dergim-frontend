@@ -1,83 +1,75 @@
 'use client';
 
-import { ComponentType } from 'react';
+import { ReactNode } from 'react';
+import { usePathname } from 'next/navigation';
+import { BookText, ClipboardList, Files, LayoutTemplate } from 'lucide-react';
 
-import { Organization } from '@/lib/schema/organization';
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-  SidebarTrigger,
-} from '@/modules/ui/sidebar';
+import { useSession } from '@/contexts/session-context';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/modules/ui/sidebar';
 import { NavMain } from '@/modules/tool-layout/nav-main';
-import { ProjectSwitcher } from '@/modules/tool-layout/nav-project';
 import { NavUser } from '@/modules/tool-layout/nav-user';
+import { ProjectSwitcher } from '@/modules/tool-layout/project-switcher';
 
 export type navItem = {
   title: string;
   url: string;
-  icon: ComponentType;
+  icon: ReactNode;
   isActive: boolean;
-  group: 'Organization' | 'Project' | 'User';
+  group: 'Project' | 'User';
 };
 
-type ToolSidebarProps = {
-  organizaton: Organization;
-};
+export function ToolSidebar() {
+  const { projects } = useSession();
 
-export function ToolSidebar({ organizaton }: ToolSidebarProps) {
+  const path = usePathname();
+
   const navMain: navItem[] = [
     {
       title: 'Dashboard',
-      url: '/dashboard',
-      icon: () => <></>,
-      isActive: true,
-      group: 'Project',
-    },
-    {
-      title: 'Boards',
-      url: '/boards',
-      icon: () => <></>,
-      isActive: false,
-      group: 'Project',
-    },
-    {
-      title: 'Files',
-      url: '/files',
-      icon: () => <></>,
-      isActive: false,
+      url: '/tool/dashboard',
+      icon: <LayoutTemplate className="size-5" />,
+      isActive: path.includes('/dashboard'),
       group: 'Project',
     },
     {
       title: 'Projects',
-      url: '/projects',
-      icon: () => <></>,
-      isActive: false,
-      group: 'Organization',
+      url: '/tool/projects',
+      icon: <BookText className="size-5" />,
+      isActive: path.includes('/projects'),
+      group: 'Project',
+    },
+    {
+      title: 'Boards',
+      url: '/tool/boards',
+      icon: <ClipboardList className="size-5" />,
+      isActive: path.includes('/boards'),
+      group: 'Project',
+    },
+    {
+      title: 'Files',
+      url: '/tool/files',
+      icon: <Files className="size-5" />,
+      isActive: path.includes('/files'),
+      group: 'Project',
     },
   ];
+
   return (
-    <div className="relative mr-0 size-fit shadow-2xl md:mr-4">
-      <Sidebar
-        variant="floating"
-        collapsible="icon"
-      >
-        <SidebarTrigger className="absolute right-4 top-4 z-30" />
-        <SidebarContent className="pt-8">
-          <SidebarHeader className="text-center text-xl font-extrabold">
-            <ProjectSwitcher organization={organizaton} />
-          </SidebarHeader>
-          <SidebarContent>
-            <NavMain items={navMain} />
-          </SidebarContent>
+    <Sidebar
+      variant="inset"
+      className="border-r"
+    >
+      <SidebarContent className="pt-2">
+        <SidebarHeader className="text-center text-xl font-extrabold">
+          <ProjectSwitcher projects={projects} />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain items={navMain} />
         </SidebarContent>
-        <SidebarFooter>
-          <NavUser />
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-    </div>
+      </SidebarContent>
+      <SidebarFooter>
+        <NavUser />
+      </SidebarFooter>
+    </Sidebar>
   );
 }

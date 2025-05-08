@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { SessionUser } from '@/lib/schema/session-user';
-import { serverProcedure } from '@/server/api/trpc';
+import { publicProcedure } from '@/server/api/trpc';
 import { backendRequest } from '@/server/lib/backend/request';
 
 const SessionResponseSchema = z.object({
@@ -51,7 +51,7 @@ const SessionResponseSchema = z.object({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export default serverProcedure.query(async ({ ctx }) => {
+export default publicProcedure.query(async ({ ctx }) => {
   try {
     if (ctx.headers.get('SessionToken')) {
       throw new Error('There is no valid session');
