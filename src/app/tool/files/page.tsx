@@ -103,7 +103,7 @@ export default function FilesPage() {
       if (response.ok) setFiles((prev) => [...prev, newFile]);
       toast({
         title: 'Files uploaded',
-        description: `${file} has been successfully uploaded.`,
+        description: `${file.name} has been successfully uploaded.`,
         variant: 'default',
       });
     });
