@@ -26,8 +26,6 @@ export default publicProcedure
         schema: DeleteProjectFileResponseSchema,
       });
 
-      console.log(response);
-
       if (!response.success) {
         throw response.error;
       }

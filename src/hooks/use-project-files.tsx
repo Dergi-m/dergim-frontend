@@ -10,7 +10,6 @@ export function useProjectFiles() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function getFileIcon(type: string) {
-    console.log(type);
     if (type.includes('image')) {
       return <ImageIcon className="h-5 w-5 text-blue-500" />;
     } else if (type.includes('pdf')) {
