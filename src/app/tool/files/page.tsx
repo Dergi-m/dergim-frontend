@@ -36,6 +36,7 @@ export default function FilesPage() {
 
   // Handle file upload
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    setLoading(true);
     const uploadedFiles = e.target.files;
 
     if (!uploadedFiles || uploadedFiles.length === 0) return;
@@ -68,8 +69,6 @@ export default function FilesPage() {
         });
         return;
       }
-
-      console.log(file.size);
 
       if (file.size > 10 * 1000 * 1000) {
         toast({
@@ -106,6 +105,7 @@ export default function FilesPage() {
         description: `${file.name} has been successfully uploaded.`,
         variant: 'default',
       });
+      setLoading(false);
     });
 
     // Reset file input

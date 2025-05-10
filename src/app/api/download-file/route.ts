@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
       }
     );
 
-    console.log(backendResponse);
     const contentType = backendResponse.headers.get('content-type') || 'application/octet-stream';
     const contentDisposition =
       backendResponse.headers.get('content-disposition') || `attachment; filename="${fileName}"`;
@@ -41,7 +40,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (error) {
-    console.log(error);
     return NextResponse.json(
       { success: false, message: 'Download failed', error },
       { status: 500 }
