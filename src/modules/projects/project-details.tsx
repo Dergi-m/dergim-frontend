@@ -96,6 +96,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
         toast({
           title: 'Invitation sent',
           description: `Invitation has been sent to ${inviteUserName}.`,
+          variant: 'default',
         });
       } else {
         toast({
@@ -314,7 +315,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
             <CardContent>
               <div className="mb-6 flex space-x-2">
                 <Input
-                  placeholder="Enter email address"
+                  placeholder="Enter username"
                   value={inviteUserName}
                   onChange={(e) => setInviteUserName(e.target.value)}
                   className="max-w-md"

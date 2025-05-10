@@ -26,9 +26,9 @@ export function ToolSidebar() {
   const navMain: navItem[] = [
     {
       title: 'Dashboard',
-      url: '/tool/dashboard',
+      url: '/tool',
       icon: <LayoutTemplate className="size-5" />,
-      isActive: path.includes('/dashboard'),
+      isActive: path == '/tool',
       group: 'Project',
     },
     {

@@ -25,7 +25,7 @@ export default publicProcedure
   .mutation(async ({ ctx, input }) => {
     try {
       const targetUser = await backendRequest({
-        url: `/api/projects/users/${input.targetUserName}`,
+        url: `/api/users/${input.targetUserName}`,
         method: 'GET',
         schema: GetUserResponse,
       });
