@@ -1,68 +1,64 @@
 'use client';
 
 import type React from 'react';
-import { useRef, useState } from 'react';
-import {
-  DownloadIcon,
-  FileIcon,
-  FileTextIcon,
-  ImageIcon,
-  SearchIcon,
-  TrashIcon,
-  UploadIcon,
-} from 'lucide-react';
+import { useMemo, useRef, useState } from 'react';
+import { FileTextIcon, ImageIcon, LoaderCircle, SearchIcon, UploadIcon } from 'lucide-react';
 
+import { parseFileItems } from '@/lib/project-file/parse-project-file';
+import { FileItem } from '@/lib/schema/file-item';
+import { useProjectFiles } from '@/hooks/use-project-files';
 import { useToast } from '@/hooks/use-toast';
+import { useSession } from '@/contexts/session-context';
+import { trpc } from '@/server/api/react';
 import { Button } from '@/modules/ui/button';
 import { Card, CardContent } from '@/modules/ui/card';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/modules/ui/dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/modules/ui/dropdown-menu';
 import { Input } from '@/modules/ui/input';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/modules/ui/table';
-
-// File type interface
-interface FileItem {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  uploadDate: Date;
-}
+import { FilesContainer } from '@/app/tool/files/files-container';
 
 export default function FilesPage() {
+  const { projects, activeProject } = useSession();
+
   const [files, setFiles] = useState<FileItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { filterFiles } = useProjectFiles();
   const { toast } = useToast();
 
+  const deleteMutation = trpc.page.files.deleteProjectFile.useMutation();
+
+  const pfiles = trpc.page.files.getProjectFiles.useQuery({
+    projectId: activeProject?.id || '',
+  });
+
   // Accepted file types
-  const acceptedFileTypes = '.jpg,.jpeg,.png,.gif,.pdf,.doc,.docx';
+  const acceptedFileTypes = '.jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx';
 
   // Handle file upload
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const uploadedFiles = e.target.files;
 
     if (!uploadedFiles || uploadedFiles.length === 0) return;
-
     // Process each uploaded file
-    Array.from(uploadedFiles).forEach((file) => {
+    Array.from(uploadedFiles).forEach(async (file) => {
       // Check if file type is allowed
       const fileExtension = file.name.split('.').pop()?.toLowerCase() || '';
-      const isAccepted = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx'].includes(
-        fileExtension
-      );
+      const isAccepted = [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'webp',
+        'pdf',
+        'doc',
+        'docx',
+        'ppt',
+        'pptx',
+        'xls',
+        'xlsx',
+      ].includes(fileExtension);
+
+      if (!activeProject) return;
 
       if (!isAccepted) {
         toast({
@@ -73,78 +69,130 @@ export default function FilesPage() {
         return;
       }
 
+      console.log(file.size);
+
+      if (file.size > 10 * 1000 * 1000) {
+        toast({
+          title: 'File too large',
+          description: `${file.name} exceeds the maximum file size of 10MB.`,
+          variant: 'destructive',
+        });
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('projectId', activeProject.id);
+
+      const response = await fetch('/api/post-file', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) return;
+      const id = crypto.randomUUID();
+
       // Create a new file item
       const newFile: FileItem = {
-        id: crypto.randomUUID(),
+        id,
+        blobName: `${id}.${file.name.split('.').pop()}`,
         name: file.name,
         type: file.type,
-        size: file.size,
-        uploadDate: new Date(),
+        updatedAt: new Date(),
       };
 
-      // Add to files state
-      setFiles((prev) => [...prev, newFile]);
+      if (response.ok) setFiles((prev) => [...prev, newFile]);
+      toast({
+        title: 'Files uploaded',
+        description: `${file} has been successfully uploaded.`,
+        variant: 'default',
+      });
     });
 
     // Reset file input
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-    toast({
-      title: 'Files uploaded',
-      description: `${uploadedFiles.length} files have been successfully uploaded.`,
-      variant: 'default',
-    });
-  };
+  }
 
   // Handle file deletion
-  const handleDeleteFile = (id: string) => {
-    setFiles((prev) => prev.filter((file) => file.id !== id));
+  async function handleDeleteFile(fileId: string) {
+    setLoading(true);
+    const res = await deleteMutation.mutateAsync({
+      fileId,
+    });
+
+    if (!res.success) {
+      toast({
+        title: 'Failed to delete file',
+        description: res.message,
+        variant: 'destructive',
+      });
+
+      return;
+    }
+
+    pfiles.refetch();
+
+    setFiles((prev) => prev.filter((file) => file.id !== fileId));
 
     toast({
       title: 'File deleted',
-      description: 'The file has been successfully removed.',
+      description: `File has been successfully deleted.`,
+      variant: 'default',
     });
-  };
+    setLoading(false);
+  }
 
-  // Handle file export/download
-  const handleExportFile = (file: FileItem) => {
+  async function handleDownloadFile(file: FileItem) {
     // In a real application, this would trigger a download from your storage
+    const download = await fetch(`/api/download-file?blobName=${file.name}`, {
+      method: 'GET',
+    });
+
+    if (!download.ok) {
+      toast({
+        title: 'Failed to download file',
+        description: `Failed to download ${file.name}.`,
+        variant: 'destructive',
+      });
+
+      return;
+    }
+
+    const blob = await download.blob();
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = file.name; // or a more user-friendly filename
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
     toast({
-      title: 'Exporting file',
+      title: 'Download started',
       description: `Downloading ${file.name}...`,
       variant: 'default',
     });
-  };
+  }
 
-  // Format file size
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+  useMemo(() => {
+    if (!pfiles.isSuccess) return;
 
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const data = pfiles.data?.files;
 
-    return Number.parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
+    if (!data) return;
 
-  // Get icon based on file type
-  const getFileIcon = (type: string) => {
-    if (type.includes('image')) {
-      return <ImageIcon className="h-5 w-5 text-blue-500" />;
-    } else if (type.includes('pdf')) {
-      return <FileTextIcon className="h-5 w-5 text-red-500" />;
-    } else if (type.includes('word') || type.includes('document')) {
-      return <FileTextIcon className="h-5 w-5 text-blue-700" />;
-    } else {
-      return <FileIcon className="h-5 w-5 text-gray-500" />;
-    }
-  };
+    const parsedFiles = parseFileItems(data);
+
+    setFiles(parsedFiles);
+  }, [pfiles.data?.files, pfiles.isSuccess]);
 
   // Filter files based on search query
-  const filteredFiles = files.filter((file) =>
-    file.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  if (projects.length === 0) {
+    return <div>{"You don't have a project yet :("}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -165,7 +213,6 @@ export default function FilesPage() {
           <input
             type="file"
             ref={fileInputRef}
-            multiple
             accept={acceptedFileTypes}
             onChange={handleFileUpload}
             className="hidden"
@@ -175,132 +222,48 @@ export default function FilesPage() {
             <UploadIcon className="mr-2 h-4 w-4" />
             Import Files
           </Button>
-
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">
-                <DownloadIcon className="mr-2 h-4 w-4" />
-                Export All
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Export Files</DialogTitle>
-                <DialogDescription>Choose the format to export your files.</DialogDescription>
-              </DialogHeader>
-              <div className="grid grid-cols-1 gap-4 py-4">
-                <Button
-                  onClick={() =>
-                    toast({
-                      title: 'Export initiated',
-                      description: 'Exporting all files as PDF...',
-                    })
-                  }
-                >
-                  Export as ZIP
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    toast({
-                      title: 'Export initiated',
-                      description: 'Exporting all files as CSV...',
-                    })
-                  }
-                >
-                  Export File List as CSV
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
-
-      {files.length === 0 ? (
+      {pfiles.isLoading || loading ? (
         <Card className="w-full">
           <CardContent className="flex flex-col items-center justify-center py-12">
-            <FileIcon className="mb-4 h-16 w-16 text-muted-foreground" />
-            <h3 className="mb-2 text-xl font-medium">No files uploaded</h3>
+            <h3 className="mb-2 text-xl font-medium">Retrieving files</h3>
             <p className="mb-4 text-muted-foreground">
-              Upload files to start managing your journal documents
+              Please wait while we fetch your files. This may take a moment.
             </p>
-            <Button onClick={() => fileInputRef.current?.click()}>
-              <UploadIcon className="mr-2 h-4 w-4" />
-              Import Files
-            </Button>
+            <LoaderCircle className="size-20 animate-spin text-blue-600 ease-in-out" />
           </CardContent>
         </Card>
       ) : (
-        <Card>
-          <CardContent className="p-0">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-12">Type</TableHead>
-                  <TableHead>File Name</TableHead>
-                  <TableHead>Size</TableHead>
-                  <TableHead>Upload Date</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredFiles.map((file) => (
-                  <TableRow key={file.id}>
-                    <TableCell>{getFileIcon(file.type)}</TableCell>
-                    <TableCell className="font-medium">{file.name}</TableCell>
-                    <TableCell>{formatFileSize(file.size)}</TableCell>
-                    <TableCell>{file.uploadDate.toLocaleDateString()}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleExportFile(file)}
-                        >
-                          <DownloadIcon className="h-4 w-4" />
-                        </Button>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                            >
-                              <TrashIcon className="h-4 w-4 text-destructive" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDeleteFile(file.id)}
-                            >
-                              Confirm Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
+        <FilesContainer
+          files={filterFiles(files, searchQuery)}
+          fileInputRef={fileInputRef}
+          handleDeleteFile={handleDeleteFile}
+          handleDownloadFile={handleDownloadFile}
+        />
       )}
-
       <div className="mt-6">
         <h2 className="mb-2 text-lg font-semibold">Accepted File Types</h2>
         <div className="flex flex-wrap gap-2">
-          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
-            <ImageIcon className="h-4 w-4" />
-            <span>Images (JPG, PNG, GIF)</span>
-          </div>
           <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
             <FileTextIcon className="h-4 w-4" />
             <span>PDF</span>
           </div>
           <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
             <FileTextIcon className="h-4 w-4" />
-            <span>Word (DOC, DOCX)</span>
+            <span>DOCS (DOC, DOCX)</span>
+          </div>
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
+            <FileTextIcon className="h-4 w-4" />
+            <span>PowerPoint (PPT, PPTX)</span>
+          </div>
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
+            <FileTextIcon className="h-4 w-4" />
+            <span>Excel (XLS, XLSX)</span>
+          </div>
+          <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-sm">
+            <ImageIcon className="h-4 w-4" />
+            <span>Images (JPG, JPEG, PNG, WEBP, GIF)</span>
           </div>
         </div>
       </div>
