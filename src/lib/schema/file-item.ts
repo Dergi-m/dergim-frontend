@@ -9,3 +9,13 @@ export const FileItem = z.object({
 });
 
 export type FileItem = z.infer<typeof FileItem>;
+
+export const BackendFile = z.object({
+  id: z.string(),
+  localFileUrl: z.string(),
+  fileUrl: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type BackendFile = z.infer<typeof BackendFile>;
