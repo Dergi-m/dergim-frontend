@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
+
+import { cn } from '@/lib/variants';
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -14,29 +16,36 @@ type NavMainProps = {
 };
 
 export function NavMain({ items }: NavMainProps) {
-  const groups = ['Project', 'Organization'];
-
   return (
-    <>
-      {groups.map((group) => (
-        <SidebarGroup
-          key={group}
-          title={group}
-        >
-          <SidebarGroupLabel>{group}</SidebarGroupLabel>
-          <SidebarMenu>
-            {items
-              .filter((item) => item.group === group)
-              .map((item, idx) => (
-                <SidebarMenuItem key={`${item.title}-${idx}`}>
-                  <SidebarMenuButton tooltip={item.title}>
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-          </SidebarMenu>
-        </SidebarGroup>
-      ))}
-    </>
+    <SidebarGroup
+      key={'tools'}
+      title={'tools'}
+    >
+      <SidebarMenu>
+        {items.map((item, idx) => (
+          <SidebarMenuItem
+            className="flex items-center space-x-3"
+            key={`${item.title}-${idx}`}
+          >
+            <Link
+              className="size-full"
+              href={item.url}
+            >
+              <SidebarMenuButton
+                className="transition-colors hover:bg-accent"
+                tooltip={item.title}
+              >
+                <span
+                  className={cn(item.isActive && 'rounded-full border-2 border-blue-800', 'p-1')}
+                >
+                  {item.icon}
+                </span>
+                <span>{item.title}</span>
+              </SidebarMenuButton>
+            </Link>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
   );
 }

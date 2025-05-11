@@ -4,7 +4,7 @@ import { cn, tv, VariantProps } from '@/lib/variants';
 import { Section } from '@/modules/ui/section';
 
 const headerVariants = tv({
-  base: 'bg-primary z-20 drop-shadow-md',
+  base: 'z-20 bg-primary drop-shadow-md',
   variants: {
     sticky: {
       true: 'sticky top-0',
@@ -32,7 +32,7 @@ export function HeaderContainer({ className, children, ...props }: ComponentProp
   return (
     <Section
       {...props}
-      className={cn('flex w-full justify-between px-5 md:container', className)}
+      className={cn('@md:container flex w-full justify-between px-5', className)}
     >
       {children}
     </Section>
@@ -43,7 +43,7 @@ export function HeaderTopBar({ className, children, ...props }: ComponentProps<'
   return (
     <div
       {...props}
-      className={cn('bg-header text-header-foreground flex w-full', className)}
+      className={cn('flex w-full bg-header text-header-foreground', className)}
     >
       <HeaderContainer>{children}</HeaderContainer>
     </div>
@@ -54,7 +54,7 @@ export function HeaderMainBar({ className, children, ...props }: ComponentProps<
   return (
     <div
       {...props}
-      className={cn('bg-header text-header-foreground flex w-full py-4', className)}
+      className={cn('flex w-full bg-header py-4 text-header-foreground', className)}
     >
       <HeaderContainer>{children}</HeaderContainer>
     </div>
@@ -65,7 +65,7 @@ export function HeaderBottomBar({ className, children, ...props }: ComponentProp
   return (
     <div
       {...props}
-      className={cn('bg-header text-header-foreground w-full', className)}
+      className={cn('w-full bg-header text-header-foreground', className)}
     >
       <HeaderContainer>{children}</HeaderContainer>
     </div>

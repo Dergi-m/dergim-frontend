@@ -1,16 +1,33 @@
 import { ReactNode } from 'react';
+import { headers } from 'next/headers';
 import Image from 'next/image';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
+import { createServerCaller } from '@/server/api/root';
+import { Button } from '@/modules/ui/button';
 import { Footer } from '@/modules/site-layout/footer';
-import { Header } from '@/modules/site-layout/header';
+import {
+  Header,
+  HeaderLeftArea,
+  HeaderMainBar,
+  HeaderRightArea,
+} from '@/modules/site-layout/header';
 
 type SiteLayoutProps = {
   children: ReactNode;
 };
-
 export default async function SiteLayout({ children }: SiteLayoutProps) {
   const year = new Date().getFullYear();
+
+  const pathname = headers().get('x-pathname');
+
+  const api = await createServerCaller();
+  const session = await api.website.authentication.getSession();
+
+  if (session.success && !pathname?.startsWith('/tool')) {
+    redirect('/tool');
+  }
 
   return (
     <>
@@ -18,17 +35,27 @@ export default async function SiteLayout({ children }: SiteLayoutProps) {
         className="bg-background py-6"
         sticky
       >
-        <div className="flex w-full items-center justify-center">
-          <Link href={'/'}>
-            <Image
-              alt="header-logo"
-              src={'/logo.png'}
-              className="flex w-60 items-center justify-center"
-              width={450}
-              height={100}
-            />
-          </Link>
-        </div>
+        <HeaderMainBar>
+          <HeaderLeftArea>
+            <Link href={'/'}>
+              <Image
+                alt="header-logo"
+                src={'/logo.png'}
+                className="w-60"
+                width={450}
+                height={100}
+              />
+            </Link>
+          </HeaderLeftArea>
+          <HeaderRightArea className="flex items-center justify-between">
+            <Link href={'/auth?act=login'}>
+              <Button variant={'outline'}>Login</Button>
+            </Link>
+            <Link href={'/auth?act=register'}>
+              <Button variant={'outline'}>Register</Button>
+            </Link>
+          </HeaderRightArea>
+        </HeaderMainBar>
       </Header>
       <main
         id="mainContent"

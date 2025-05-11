@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/modules/ui/card';
 import { Heading } from '@/modules/typography/heading';
 import { Text } from '@/modules/typography/text';
 
-export default function LandingPage() {
+export default async function LandingPage() {
   return (
     <main className="mx-auto w-full max-w-7xl px-4 py-12">
       <section className="mb-16 text-center">
@@ -16,7 +16,7 @@ export default function LandingPage() {
         >
           Automate Your Journal Workflow
         </Heading>
-        <Text className="text-muted-foreground mx-auto mb-6 max-w-2xl text-lg">
+        <Text className="mx-auto mb-6 max-w-2xl text-lg text-muted-foreground">
           From <b>writing</b> to <b>editing</b> to <b>presenting</b> Dergi-M streamlines your entire
           publishing process.
         </Text>
@@ -52,7 +52,7 @@ export default function LandingPage() {
                   {feature.title}
                 </Heading>
               </div>
-              <Text className="text-muted-foreground text-sm">{feature.description}</Text>
+              <Text className="text-sm text-muted-foreground">{feature.description}</Text>
             </CardContent>
           </Card>
         ))}

@@ -18,11 +18,17 @@ jobs:
         with:
           token: ${{ secrets.VERCEL_TOKEN }}
           projectName: dergim
-          envVariableKeys: BACKEND_URL
+          envVariableKeys: BACKEND_API_URL,BACKEND_CLIENT_ID,BACKEND_CLIENT_SECRET
         env:
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
-          TARGET_BACKEND_URL: preview,development,production
-          TYPE_BACKEND_URL: encrypted
+          BACKEND_API_URL: ${{ secrets.BACKEND_API_URL }}
+          TARGET_BACKEND_API_URL: preview,development,production
+          TYPE_BACKEND_API_URL: encrypted
+          BACKEND_CLIENT_ID: ${{ secrets.BACKEND_CLIENT_ID }}
+          TARGET_BACKEND_CLIENT_ID: preview,development,production
+          TYPE_BACKEND_CLIENT_ID: encrypted
+          BACKEND_CLIENT_SECRET: ${{ secrets.BACKEND_CLIENT_SECRET }}
+          TARGET_BACKEND_CLIENT_SECRET: preview,development,production
+          TYPE_BACKEND_CLIENT_SECRET: encrypted
 
       - uses: amondnet/vercel-action@v20
         with:
