@@ -40,6 +40,7 @@ const SessionResponseSchema = z.object({
             projectId: z.string(),
             senderUserId: z.string(),
             targetUserId: z.string(),
+            status: z.number(),
             message: z.string(),
             createdAt: z.string(),
           })

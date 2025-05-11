@@ -13,9 +13,20 @@ export const ProjectInvitation = z.object({
   senderUserId: z.string(),
   targetUserId: z.string(),
   message: z.string(),
+  status: z.number(),
   createdAt: z.string(),
 });
 export type ProjectInvitation = z.infer<typeof ProjectInvitation>;
+
+export const UserTask = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  status: z.number(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+});
+export type UserTask = z.infer<typeof UserTask>;
 
 export const SessionUser = z.object({
   id: z.string(),

@@ -2,7 +2,8 @@
 
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { ProjectSummary, SessionUser } from '@/lib/schema/session-user';
+import { ProjectInvitation, ProjectSummary, SessionUser } from '@/lib/schema/session-user';
+import { trpc } from '@/server/api/react';
 
 type SessionContextType = {
   sessionUser: SessionUser;
@@ -12,6 +13,9 @@ type SessionContextType = {
   projects: ProjectSummary[];
   addProject: (project: ProjectSummary) => void;
   removeProject: (projectId: string) => void;
+  invitations: ProjectInvitation[];
+  acceptInvitation: (invitationId: string) => void;
+  rejectInvitation: (invitationId: string) => void;
 };
 
 type SessionProviderProps = {
@@ -24,6 +28,9 @@ const SessionContext = createContext<SessionContextType | null>(null);
 export function SessionProvider({ children, session }: SessionProviderProps) {
   const [sessionUser, setSessionUser] = useState<SessionUser>(session);
   const [projects, setProjects] = useState<ProjectSummary[]>(session.projects ?? []);
+  const [invitations, setInvitations] = useState<ProjectInvitation[]>(
+    session.projectInvitations ?? []
+  );
   const [activeProject, setActiveProject] = useState<ProjectSummary>();
 
   const addProject = (project: ProjectSummary) => {
@@ -32,6 +39,20 @@ export function SessionProvider({ children, session }: SessionProviderProps) {
 
   const removeProject = (projectId: string) => {
     setProjects((prevProjects) => prevProjects.filter((p) => p.id !== projectId));
+  };
+
+  const acceptInvitation = (invitationId: string) => {
+    const invitation = invitations.find((i) => i.id === invitationId);
+    if (!invitation) return;
+
+    setInvitations((prevInvitations) => prevInvitations.filter((i) => i.id !== invitationId));
+  };
+
+  const rejectInvitation = (invitationId: string) => {
+    const invitation = invitations.find((i) => i.id === invitationId);
+    if (!invitation) return;
+
+    setInvitations((prevInvitations) => prevInvitations.filter((i) => i.id !== invitationId));
   };
 
   useEffect(() => {
@@ -60,6 +81,9 @@ export function SessionProvider({ children, session }: SessionProviderProps) {
         addProject,
         projects,
         removeProject,
+        invitations,
+        acceptInvitation,
+        rejectInvitation,
       }}
     >
       {children}
@@ -83,9 +107,21 @@ export function useSession() {
   if (context == null) {
     throw new Error('useSession must be used within a SessionProvider');
   }
+  const {
+    sessionUser,
+    setActiveProject,
+    activeProject,
+    addProject,
+    projects,
+    removeProject,
+    invitations,
+    rejectInvitation,
+    acceptInvitation,
+  } = context;
 
-  const { sessionUser, setActiveProject, activeProject, addProject, projects, removeProject } =
-    context;
+  const userTasks = trpc.page.dashboard.getUserTasks.useQuery({
+    userId: context.sessionUser.id,
+  });
 
   return {
     sessionUser,
@@ -94,5 +130,9 @@ export function useSession() {
     projects,
     addProject,
     removeProject,
+    invitations,
+    acceptInvitation,
+    rejectInvitation,
+    userTasks,
   } as const;
 }

@@ -20,10 +20,6 @@ export const Member = z.object({
   email: z.string(),
 });
 
-export const ProjectFile = z.any();
-
-export const ProjectTask = z.any();
-
 export const Project = z.object({
   id: z.string(),
   name: z.string(),
@@ -31,8 +27,6 @@ export const Project = z.object({
   creatorId: z.string(),
   projectInvitations: ProjectInvitation.array().optional(),
   members: Member.array().optional(),
-  // projectFiles: ProjectFile.array().optional(),
-  // projectTasks: ProjectTask.array().optional(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
