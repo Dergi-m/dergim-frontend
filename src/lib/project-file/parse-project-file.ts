@@ -1,18 +1,10 @@
-import { FileItem } from '@/lib/schema/file-item';
-
-type RetrievedFile = {
-  id: string;
-  localFileUrl: string;
-  fileUrl: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { BackendFile, FileItem } from '@/lib/schema/file-item';
 
 export function createFileItem(fileItem: FileItem) {
   return fileItem;
 }
 
-export function parseFileItems(files: RetrievedFile[]): FileItem[] {
+export function parseFileItems(files: BackendFile[]): FileItem[] {
   const parsed = files.map((file) => {
     const { fileUrl, localFileUrl, updatedAt, id } = file;
 

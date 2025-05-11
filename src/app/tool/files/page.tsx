@@ -5,7 +5,7 @@ import { useMemo, useRef, useState } from 'react';
 import { FileTextIcon, ImageIcon, LoaderCircle, SearchIcon, UploadIcon } from 'lucide-react';
 
 import { parseFileItems } from '@/lib/project-file/parse-project-file';
-import { FileItem } from '@/lib/schema/file-item';
+import { BackendFile, FileItem } from '@/lib/schema/file-item';
 import { useProjectFiles } from '@/hooks/use-project-files';
 import { useToast } from '@/hooks/use-toast';
 import { useSession } from '@/contexts/session-context';
@@ -88,18 +88,25 @@ export default function FilesPage() {
       });
 
       if (!response.ok) return;
-      const id = crypto.randomUUID();
+
+      const body = await response.json();
+      const { file: resFile } = body;
+
+      const backendFileRes = (await BackendFile.safeParseAsync(resFile)).data;
+
+      if (!backendFileRes) {
+        toast({
+          title: 'Failed to upload file',
+          description: `Failed to upload ${file.name}.`,
+          variant: 'destructive',
+        });
+        return;
+      }
 
       // Create a new file item
-      const newFile: FileItem = {
-        id,
-        blobName: `${id}.${file.name.split('.').pop()}`,
-        name: file.name,
-        type: file.type,
-        updatedAt: new Date(),
-      };
+      const newFile = parseFileItems([backendFileRes]);
 
-      if (response.ok) setFiles((prev) => [...prev, newFile]);
+      if (response.ok) setFiles((prev) => [...prev, ...newFile]);
       toast({
         title: 'Files uploaded',
         description: `${file.name} has been successfully uploaded.`,
