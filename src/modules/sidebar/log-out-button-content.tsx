@@ -32,8 +32,8 @@ export function LogOutButtonContent({ logOutAction }: LogOutButtonProps) {
         <DialogDescription>Are you sure you want to log out?</DialogDescription>
       </DialogHeader>
       <DialogFooter className="flex items-end justify-between">
-        <DialogClose>
-          <Button variant={'outline'}>Cancel</Button>
+        <DialogClose className="flex items-center justify-center rounded-md border px-3 py-1 transition-colors hover:bg-slate-100">
+          Cancel
         </DialogClose>
         <Button
           onClick={handleLogOut}

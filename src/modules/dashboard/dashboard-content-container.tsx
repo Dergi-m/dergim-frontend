@@ -120,23 +120,6 @@ export function DashboardContentContainer() {
     setInvitationLoading(false);
   }
 
-  const handleUpdateTaskStatus = (taskId: string, newStatus: number) => {
-    // In a real app, you would call an API to update the task status
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId
-          ? { ...task, status: newStatus, updatedAt: new Date().toISOString() }
-          : task
-      )
-    );
-
-    const statusText = newStatus === 2 ? 'completed' : newStatus === 1 ? 'in progress' : 'pending';
-    toast({
-      title: 'Task updated',
-      description: `Task has been marked as ${statusText}.`,
-    });
-  };
-
   return (
     <div className="col-span-3">
       <Tabs
@@ -195,28 +178,6 @@ export function DashboardContentContainer() {
                             asChild
                             className="px-0"
                           ></Button>
-                          <div className="flex gap-2">
-                            {task.status !== 2 && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleUpdateTaskStatus(task.id, 2)}
-                              >
-                                <CheckIcon className="mr-1 h-4 w-4" />
-                                Mark Complete
-                              </Button>
-                            )}
-                            {task.status === 2 && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleUpdateTaskStatus(task.id, 1)}
-                              >
-                                <ClockIcon className="mr-1 h-4 w-4" />
-                                Reopen
-                              </Button>
-                            )}
-                          </div>
                         </CardFooter>
                       </div>
                     </div>
