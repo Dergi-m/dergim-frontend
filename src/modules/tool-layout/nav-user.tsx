@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { ChevronsUpDown, LogOut } from 'lucide-react';
 
 import { useSession } from '@/contexts/session-context';
-import { Avatar, AvatarFallback, AvatarImage } from '@/modules/ui/avatar';
+import { Avatar, AvatarFallback } from '@/modules/ui/avatar';
 import { Dialog, DialogTrigger } from '@/modules/ui/dialog';
 import {
   DropdownMenu,
@@ -26,8 +26,6 @@ export function NavUser() {
     .split(' ')
     .map((item) => item[0]?.toUpperCase())
     .join('');
-
-  const avatarPath = '/avatars/shadcn.jpg';
 
   async function onLogOut() {
     const sessionRemover = await fetch('/api/remove-session-token', {
@@ -57,10 +55,6 @@ export function NavUser() {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={avatarPath}
-                    alt={sessionUser.name}
-                  />
                   <AvatarFallback className="rounded-lg">{avatarFallback}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -79,10 +73,6 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage
-                      src={avatarPath}
-                      alt={sessionUser.name}
-                    />
                     <AvatarFallback className="rounded-lg">{avatarFallback}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">

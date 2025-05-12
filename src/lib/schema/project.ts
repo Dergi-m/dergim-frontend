@@ -19,6 +19,7 @@ export const Member = z.object({
   userName: z.string(),
   email: z.string(),
 });
+export type Member = z.infer<typeof Member>;
 
 export const Project = z.object({
   id: z.string(),
