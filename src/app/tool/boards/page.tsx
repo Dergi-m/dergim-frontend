@@ -8,10 +8,9 @@ export default function BoardRedirectPage() {
   const { activeProject } = useSession();
 
   if (!activeProject) {
-    <div>You don&apos;t have project :(</div>;
+    return <div>You don&apos;t have a project :(</div>;
   }
 
   redirect(`/tool/boards/${activeProject?.id}`);
-
-  return <></>;
+  return <div>Loading...</div>;
 }
