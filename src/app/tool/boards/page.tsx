@@ -7,9 +7,10 @@ import { useSession } from '@/contexts/session-context';
 export default function BoardRedirectPage() {
   const { activeProject } = useSession();
 
-  if (activeProject) {
-    redirect(`/tool/boards/${activeProject?.id}`);
-  } else {
-    <div>You don&apos;t have project :(</div>;
+  if (!activeProject) {
+    return <div>You don&apos;t have a project :(</div>;
   }
+
+  redirect(`/tool/boards/${activeProject?.id}`);
+  return <div>Loading...</div>;
 }
