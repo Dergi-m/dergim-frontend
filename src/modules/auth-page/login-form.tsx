@@ -1,7 +1,5 @@
 'use client';
 
-import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -14,8 +12,6 @@ import { Input } from '@/modules/ui/input';
 import { SpinAnim } from '@/modules/ui/spin-anim';
 
 export function LoginForm() {
-  const router = useRouter();
-
   const loginForm = useForm<z.infer<typeof LoginFormSchema>>({
     resolver: zodResolver(LoginFormSchema),
     defaultValues: {
@@ -25,30 +21,42 @@ export function LoginForm() {
   });
 
   const loginMutation = trpc.website.authentication.login.useMutation();
-
-  useMemo(async () => {
-    if (loginMutation.isSuccess) {
-      const body = JSON.stringify({ sessionToken: loginMutation.data.sessionToken });
-
-      const sessionSetter = await fetch('/api/set-session-token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body,
-        credentials: 'include',
-      });
-
-      if (sessionSetter.ok) {
-        router.push('/tool');
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loginMutation.isSuccess]);
+  // useMemo(async () => {
+  //   if (loginMutation.isSuccess) {
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [loginMutation.isSuccess]);
 
   async function onLogin(data: LoginFormSchema) {
     try {
-      await loginMutation.mutateAsync(data);
+      const res = await loginMutation.mutateAsync(data);
+      console.log(data);
+      if (res.sessionToken) {
+        await fetch('/api/remove-session-token', {
+          method: 'POST',
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        const body = JSON.stringify({ sessionToken: res.sessionToken });
+
+        const sessionSetter = await fetch('/api/set-session-token', {
+          method: 'POST',
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body,
+          credentials: 'include',
+        });
+
+        if (sessionSetter.ok) {
+          window.location.replace('/tool');
+        }
+      }
     } catch {
       loginForm.setError('root', {
         type: 'validate',

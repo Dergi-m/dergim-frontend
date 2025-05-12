@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -13,7 +12,6 @@ import { Input } from '@/modules/ui/input';
 import { SpinAnim } from '@/modules/ui/spin-anim';
 
 export function RegisterForm() {
-  const router = useRouter();
   const registerForm = useForm({
     resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
@@ -30,6 +28,14 @@ export function RegisterForm() {
 
   useMemo(async () => {
     if (registerMutation.isSuccess) {
+      await fetch('/api/remove-session-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+      });
+
       const body = JSON.stringify({ sessionToken: registerMutation.data.sessionToken });
 
       const sessionSetter = await fetch('/api/set-session-token', {
@@ -42,7 +48,7 @@ export function RegisterForm() {
       });
 
       if (sessionSetter.ok) {
-        router.push('/tool');
+        window.location.replace('/tool');
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
