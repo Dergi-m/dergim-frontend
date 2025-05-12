@@ -21,6 +21,7 @@ export default publicProcedure
     const response = await backendRequest({
       url: `/api/users/login`,
       method: 'POST',
+      cache: 'no-cache',
       schema: LoginResponseSchema,
       body,
     });

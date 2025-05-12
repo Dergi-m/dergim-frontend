@@ -62,6 +62,7 @@ export default serverProcedure.query(async ({ ctx }) => {
       url: `/api/Auth/Session`,
       method: 'GET',
       schema: SessionResponseSchema,
+      cache: 'no-cache',
     });
 
     if (!response.success) {

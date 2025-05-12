@@ -7,7 +7,9 @@ export async function POST(req: NextRequest) {
     headers: { 'Content-Type': 'application/json' },
   });
 
-  res.cookies.delete('sessionToken');
+  if (req.cookies.has('sessionToken')) {
+    res.cookies.delete('sessionToken');
+  }
 
   return res;
 }
