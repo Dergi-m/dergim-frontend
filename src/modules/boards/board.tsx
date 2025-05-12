@@ -105,7 +105,6 @@ export function Board({ project }: BoardProps) {
         };
       }
 
-      console.log(newStatus);
       return task;
     });
 
@@ -143,7 +142,6 @@ export function Board({ project }: BoardProps) {
     });
     projectTasks.refetch();
     setIsNewTaskDialogOpen(false);
-    console.log(data);
   }
 
   async function deleteTask(taskId: string) {
