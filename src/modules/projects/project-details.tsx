@@ -28,6 +28,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(project.name);
   const [editedDescription, setEditedDescription] = useState(project.description);
+  const [members, setMembers] = useState(project.members || []);
   const [inviteUserName, setInviteUserName] = useState('');
   const { sessionUser } = useSession();
   const router = useRouter();
@@ -73,7 +74,6 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
     setEditedDescription(project.description);
     setIsEditing(false);
   };
-
   async function handleInviteUser() {
     try {
       if (!inviteUserName.trim()) {
@@ -119,6 +119,8 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
       projectId: project.id,
       userId: memberId,
     });
+
+    setMembers((prev) => prev.filter((member) => member.id !== memberId));
 
     if (res.success) {
       toast({
@@ -237,7 +239,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
               <CardDescription>People with access to this project</CardDescription>
             </CardHeader>
             <CardContent>
-              {project.members && project.members.length > 0 ? (
+              {members && members.length > 0 ? (
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -248,7 +250,7 @@ export function ProjectDetails({ project }: ProjectDetailsProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {project.members.map((member) => (
+                    {members.map((member) => (
                       <TableRow key={member.id}>
                         <TableCell className="font-medium">
                           <div className="flex items-center space-x-3">

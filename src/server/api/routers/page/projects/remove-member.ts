@@ -21,13 +21,13 @@ export default publicProcedure
 
       const response = await backendRequest({
         url: `/api/projects/${input.projectId}/remove-member`,
-        method: 'GET',
+        method: 'PUT',
         schema: RemoveMemberResponseSchema,
         query: {
           userId: input.userId,
         },
       });
-
+      console.log(response);
       if (!response.success) {
         throw response.error;
       }
