@@ -44,7 +44,7 @@
     "clsx": "^2.1.1",
     "immer": "^10.1.1",
     "lucide-react": "^0.485.0",
-    "next": "14.2.26",
+    "next": "14.2.30",
     "next-intl": "3.17.2",
     "nuqs": "^2.4.1",
     "postcss-pxtorem": "^6.1.0",
